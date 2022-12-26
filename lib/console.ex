@@ -3,7 +3,7 @@ defmodule Ash.Term.Console do
   alias Ash.Term.Encoder
   alias Ash.Term.Client
 
-  @node :console@localhost
+  @node :ash_console@localhost
 
   def start(opts) do
     opts = Keyword.put_new(opts, :node, @node)

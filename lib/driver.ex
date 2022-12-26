@@ -3,6 +3,7 @@ defmodule Ash.Term.Driver do
   alias Ash.Term.Encoder
   alias Ash.Term.Parser
   alias Ash.Term.Port
+  use Ash.Term.Defaults
   use Ash.Term.Const
 
   def start(opts) do

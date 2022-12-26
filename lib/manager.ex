@@ -3,7 +3,6 @@ defmodule Ash.Term.Manager do
   use Ash.Tui
 
   @log false
-  @fore 0x1C
 
   def init(opts) do
     set_handler(&handler/1)
@@ -36,14 +35,14 @@ defmodule Ash.Term.Manager do
         scale: 2,
         size: {cols, 2},
         text: "Applications",
-        class: %{fore: @fore, back: get_style(:back, nil, nil)}
+        class: %{fore: @ash_logo_fore, back: get_style(:back, nil, nil)}
       )
 
       label(:shortcut,
         origin: {0, 2},
         size: {cols, 1},
         text: "(ctrl+esc)",
-        class: %{fore: @fore, back: get_style(:back, nil, nil)}
+        class: %{fore: @ash_logo_fore, back: get_style(:back, nil, nil)}
       )
 
       button(:button,
@@ -67,7 +66,7 @@ defmodule Ash.Term.Manager do
         origin: {0, rows - 1},
         size: {div(cols, 2), 2},
         align: :left,
-        class: %{fore: @fore, back: get_style(:back, nil, nil)}
+        class: %{fore: @ash_logo_fore, back: get_style(:back, nil, nil)}
       )
 
       label(:url,
@@ -75,7 +74,7 @@ defmodule Ash.Term.Manager do
         size: {div(cols, 2), 2},
         text: "appshell.org",
         align: :right,
-        class: %{fore: @fore, back: get_style(:back, nil, nil)}
+        class: %{fore: @ash_logo_fore, back: get_style(:back, nil, nil)}
       )
     end
   end

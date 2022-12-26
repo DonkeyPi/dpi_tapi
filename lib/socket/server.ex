@@ -156,20 +156,6 @@ defmodule Ash.Term.Socket.Server do
     end
   end
 
-  # control + esc
-  # kubuntu opens app manager as well and its the press event
-  # 11->PRESS 12->RELEASE (using both because of above)
-  # ff1b->ESC
-  # 01->Shift flags
-  # 02->Control flags
-  # 00000000->xy missing data
-  defp shortcut(""), do: false
-  defp shortcut("11ff1b02" <> <<_::binary-size(8)>> <> _), do: true
-  defp shortcut("12ff1b02" <> <<_::binary-size(8)>> <> _), do: true
-  defp shortcut("11ff1b01" <> <<_::binary-size(8)>> <> _), do: true
-  defp shortcut("12ff1b01" <> <<_::binary-size(8)>> <> _), do: true
-  defp shortcut(<<_::binary-size(16)>> <> tail), do: shortcut(tail)
-
   defp model(state) do
     list = Enum.sort_by(Map.values(state.clients), & &1.id)
     {:event, %{type: :model, model: list}}

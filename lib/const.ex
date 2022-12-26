@@ -3,11 +3,6 @@ defmodule Ash.Term.Const do
     quote do
       use Bitwise
 
-      # keep in sync with defaults in src/init.c
-      @cols 100
-      @rows 30
-      @title "Ash.Term"
-
       @ash_key_release 0x10 ||| 0x01
       @ash_key_press 0x10 ||| 0x02
       @ash_button_release 0x20 ||| 0x01
