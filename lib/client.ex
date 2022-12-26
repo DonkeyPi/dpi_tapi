@@ -9,6 +9,7 @@ defmodule Ash.Term.Client do
     this = self()
     title = Keyword.fetch!(opts, :title)
     {server, opts} = Keyword.pop(opts, :server, Ash.Term.Server)
+    {select, opts} = Keyword.pop(opts, :select, false)
     {node, opts} = Keyword.pop(opts, :node)
 
     server =
@@ -17,7 +18,7 @@ defmodule Ash.Term.Client do
         node -> :rpc.call(node, Process, :whereis, [server])
       end
 
-    pid = spawn_link(fn -> run(this, server, title) end)
+    pid = spawn_link(fn -> run(this, server, title, select) end)
 
     {cols, rows} =
       receive do
@@ -37,9 +38,9 @@ defmodule Ash.Term.Client do
     :ok
   end
 
-  defp run(pid, server, title) do
+  defp run(pid, server, title, select) do
     Process.monitor(server)
-    send(server, {:client, self(), title})
+    send(server, {:client, self(), title, select})
     loop(pid, server, @state)
   end
 

@@ -18,11 +18,11 @@ defmodule Ash.Term.Server do
   end
 
   def start_link(opts \\ []) do
-    pid = spawn_link(fn -> hub_start(opts) end)
+    pid = spawn_link(fn -> run(opts) end)
     {:ok, pid}
   end
 
-  defp hub_start(opts) do
+  defp run(opts) do
     true = Process.register(self(), __MODULE__)
     opts = Keyword.put_new(opts, :title, @title)
     opts = Driver.defaults(opts)
@@ -45,7 +45,7 @@ defmodule Ash.Term.Server do
 
     {:ok, manager} = Manager.start_link(opts)
 
-    hub_loop(%{
+    loop(%{
       port: port,
       size: {cols, rows},
       selected: manager,
@@ -55,16 +55,30 @@ defmodule Ash.Term.Server do
     })
   end
 
-  defp hub_loop(%{port: port, selected: selected, manager: manager, size: {cols, rows}} = state) do
+  defp select(info, %{selected: selected, manager: manager} = state) do
+    {cols, rows} = state.size
+
+    case selected do
+      ^manager -> send(selected, xon_event(cols, rows))
+      _ -> send(selected, {self(), xoff_write()})
+    end
+
+    selected = info.client
+    send(selected, {self(), xon_write(cols, rows)})
+    Map.put(state, :selected, selected)
+  end
+
+  defp loop(%{port: port, selected: selected, manager: manager} = state) do
     receive do
-      {:client, client, title} ->
+      {:client, client, title, select} ->
         id = state.count
         ref = Process.monitor(client)
         info = %{id: id, ref: ref, client: client, title: title}
         state = Map.put(state, :count, id + 1)
         state = put_in(state, [:clients, client], info)
         send(manager, model(state))
-        hub_loop(state)
+        state = if select, do: select(info, state), else: state
+        loop(state)
 
       {:DOWN, _, :process, client, _} ->
         {info, state} = pop_in(state, [:clients, client])
@@ -72,40 +86,37 @@ defmodule Ash.Term.Server do
 
         state =
           if info.client == selected do
+            {cols, rows} = state.size
             send(manager, xon_event(cols, rows))
             Map.put(state, :selected, manager)
           else
             state
           end
 
-        hub_loop(state)
+        loop(state)
 
       {:select, ^manager, info} ->
         state =
           case Map.has_key?(state.clients, info.client) and selected == manager do
-            true ->
-              selected = info.client
-              send(selected, {self(), xon_write(cols, rows)})
-              Map.put(state, :selected, selected)
-
-            _ ->
-              state
+            true -> select(info, state)
+            _ -> state
           end
 
-        hub_loop(state)
+        loop(state)
 
       {:input, ^selected, data} ->
         Port.write!(port, data)
-        hub_loop(state)
+        loop(state)
 
       {:input, _, _data} ->
         # drop data from unselected
-        hub_loop(state)
+        loop(state)
 
       {^port, {:data, data}} ->
         state =
           case {shortcut(data), selected == manager} do
             {true, false} ->
+              {cols, rows} = state.size
               send(selected, {self(), xoff_write()})
               send(manager, xon_event(cols, rows))
               Map.put(state, :selected, manager)
@@ -122,7 +133,7 @@ defmodule Ash.Term.Server do
               state
           end
 
-        hub_loop(state)
+        loop(state)
 
       {^port, {:exit_status, es}} ->
         raise "Port exit status #{es}"
