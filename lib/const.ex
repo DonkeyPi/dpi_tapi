@@ -61,6 +61,30 @@ defmodule Ash.Term.Const do
 
       @keyrange 32..126
 
+      # latam spanish
+      @ash_key_notsign 0x0AC
+      @ash_key_degree 0x0B0
+      @ash_key_exclamdown 0x0A1
+      @ash_key_questiondown 0x0BF
+
+      @ash_key_ntilde 0x0F1
+      @ash_key_Ntilde 0x0D1
+
+      @ash_key_udiaeresis 0x0FC
+      @ash_key_Udiaeresis 0x0DC
+
+      @ash_key_aacute 0x0E1
+      @ash_key_eacute 0x0E9
+      @ash_key_iacute 0x0ED
+      @ash_key_oacute 0x0F3
+      @ash_key_uacute 0x0FA
+
+      @ash_key_Aacute 0x0C1
+      @ash_key_Eacute 0x0C9
+      @ash_key_Iacute 0x0CD
+      @ash_key_Oacute 0x0D3
+      @ash_key_Uacute 0x0DA
+
       @keymap %{
         @ash_mouse_left => :bleft,
         @ash_mouse_right => :bright,
@@ -92,7 +116,27 @@ defmodule Ash.Term.Const do
         @ash_key_left => :kleft,
         @ash_key_up => :kup,
         @ash_key_right => :kright,
-        @ash_key_down => :kdown
+        @ash_key_down => :kdown,
+
+        # latam spanish
+        @ash_key_notsign => '¬',
+        @ash_key_degree => '°',
+        @ash_key_exclamdown => '¡',
+        @ash_key_questiondown => '¿',
+        @ash_key_ntilde => 'ñ',
+        @ash_key_Ntilde => 'Ñ',
+        @ash_key_udiaeresis => 'ü',
+        @ash_key_Udiaeresis => 'Ü',
+        @ash_key_aacute => 'á',
+        @ash_key_eacute => 'é',
+        @ash_key_iacute => 'í',
+        @ash_key_oacute => 'ó',
+        @ash_key_uacute => 'ú',
+        @ash_key_Aacute => 'Á',
+        @ash_key_Eacute => 'É',
+        @ash_key_Iacute => 'Í',
+        @ash_key_Oacute => 'Ó',
+        @ash_key_Uacute => 'Ú'
       }
     end
   end

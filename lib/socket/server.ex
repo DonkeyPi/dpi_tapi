@@ -138,7 +138,7 @@ defmodule Ash.Term.Socket.Server do
               state
 
             {false, true} ->
-              Parser.parse(data, &handle/3, manager, nil)
+              Parser.parse(data, &handle/2, manager)
               state
 
             {false, false} ->
@@ -161,7 +161,7 @@ defmodule Ash.Term.Socket.Server do
     {:event, %{type: :model, model: list}}
   end
 
-  defp handle(pid, _, event) do
+  defp handle(pid, event) do
     send(pid, {:event, event})
   end
 

@@ -1,12 +1,11 @@
 defmodule Ash.Term.Parser do
   use Ash.Term.Const
 
-  def parse("", _, _, state), do: state
+  def parse("", _, state), do: state
 
   def parse(
         <<packet::binary-size(16)>> <> data,
         callback,
-        pid,
         state
       ) do
     event = parse_packet(packet)
@@ -14,10 +13,10 @@ defmodule Ash.Term.Parser do
     state =
       case event do
         nil -> state
-        _ -> callback.(pid, state, event)
+        _ -> callback.(state, event)
       end
 
-    parse(data, callback, pid, state)
+    parse(data, callback, state)
   end
 
   def parse_packet(packet) do

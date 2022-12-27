@@ -3,7 +3,7 @@ defmodule Ash.Term.Client do
   alias Ash.Term.Encoder
   alias Ash.Term.Parser
 
-  @state %{active: false, cols: 0, rows: 0}
+  @state %{pid: nil, active: false, cols: 0, rows: 0}
 
   def start(opts) do
     this = self()
@@ -41,7 +41,7 @@ defmodule Ash.Term.Client do
   defp run(pid, server, title, select) do
     Process.monitor(server)
     send(server, {:client, self(), title, select})
-    loop(pid, server, @state)
+    loop(pid, server, %{@state | pid: pid})
   end
 
   defp loop(pid, server, %{active: false} = state) do
@@ -52,7 +52,7 @@ defmodule Ash.Term.Client do
 
       {^server, {:write, data}} ->
         # wait xon
-        state = Parser.parse(data, &handle/3, pid, state)
+        state = Parser.parse(data, &handle/2, state)
         loop(pid, server, state)
 
       msg ->
@@ -67,7 +67,7 @@ defmodule Ash.Term.Client do
         loop(pid, server, state)
 
       {^server, {:write, data}} ->
-        state = Parser.parse(data, &handle/3, pid, state)
+        state = Parser.parse(data, &handle/2, state)
         loop(pid, server, state)
 
       msg ->
@@ -75,7 +75,7 @@ defmodule Ash.Term.Client do
     end
   end
 
-  defp handle(pid, state, event) do
+  defp handle(state, event) do
     state =
       case event do
         %{type: :sys, key: :pause} ->
@@ -88,7 +88,7 @@ defmodule Ash.Term.Client do
           state
       end
 
-    if state.active, do: send(pid, {:event, event})
+    if state.active, do: send(state.pid, {:event, event})
     state
   end
 end

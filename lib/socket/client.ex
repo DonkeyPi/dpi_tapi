@@ -5,7 +5,7 @@ defmodule Ash.Term.Socket.Client do
 
   @port 8023
 
-  @state %{active: false, cols: 0, rows: 0}
+  @state %{pid: nil, active: false, cols: 0, rows: 0}
 
   def start(opts) do
     this = self()
@@ -38,7 +38,7 @@ defmodule Ash.Term.Socket.Client do
     opts = [:binary, packet: :raw, active: true]
     {:ok, socket} = :gen_tcp.connect(host, port, opts)
     :ok = :gen_tcp.send(socket, title)
-    loop(pid, socket, @state)
+    loop(pid, socket, %{@state | pid: pid})
   end
 
   defp loop(pid, socket, %{active: false} = state) do
@@ -49,7 +49,7 @@ defmodule Ash.Term.Socket.Client do
 
       {:tcp, ^socket, data} ->
         # wait xon
-        state = Parser.parse(data, &handle/3, pid, state)
+        state = Parser.parse(data, &handle/2, state)
         loop(pid, socket, state)
 
       msg ->
@@ -64,7 +64,7 @@ defmodule Ash.Term.Socket.Client do
         loop(pid, socket, state)
 
       {:tcp, ^socket, data} ->
-        state = Parser.parse(data, &handle/3, pid, state)
+        state = Parser.parse(data, &handle/2, state)
         loop(pid, socket, state)
 
       msg ->
@@ -72,7 +72,7 @@ defmodule Ash.Term.Socket.Client do
     end
   end
 
-  defp handle(pid, state, event) do
+  defp handle(state, event) do
     state =
       case event do
         %{type: :sys, key: :pause} ->
@@ -85,7 +85,7 @@ defmodule Ash.Term.Socket.Client do
           state
       end
 
-    if state.active, do: send(pid, {:event, event})
+    if state.active, do: send(state.pid, {:event, event})
     state
   end
 end

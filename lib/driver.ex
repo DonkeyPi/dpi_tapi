@@ -47,7 +47,7 @@ defmodule Ash.Term.Driver do
         loop(pid, port)
 
       {^port, {:data, data}} ->
-        Parser.parse(data, &handle/3, pid, nil)
+        Parser.parse(data, &handle/2, pid)
         loop(pid, port)
 
       {^port, {:exit_status, es}} ->
@@ -58,7 +58,7 @@ defmodule Ash.Term.Driver do
     end
   end
 
-  defp handle(pid, _, event) do
+  defp handle(pid, event) do
     send(pid, {:event, event})
   end
 end

@@ -30,6 +30,8 @@ defmodule Ash.Term.Encoder do
   def encode(:move, {x, y}), do: [encode(:x, x), encode(:y, y)]
   def encode(:motion, _), do: "m"
 
+  def encode(:layout, n) when n in 0x00..0xFF, do: "k#{hex(n, 2)}"
+
   def encode(:title, title) when byte_size(title) < 256,
     do: ["t", hex(byte_size(title), 2), title]
 
