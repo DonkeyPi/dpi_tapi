@@ -7,7 +7,7 @@ defmodule Ash.Term.Manager do
   def init(opts) do
     set_handler(&handler/1)
     if @log, do: log("Opts #{inspect(opts)}")
-    run(&main/1, opts)
+    {&main/1, opts}
   end
 
   defp handler(%{type: :model, model: model}) do
