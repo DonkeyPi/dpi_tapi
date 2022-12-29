@@ -33,15 +33,8 @@ defmodule Ash.Term.Manager do
       # use default background
       label(:title,
         scale: 2,
-        size: {cols, 2},
-        text: "Applications",
-        class: %{fore: @ash_logo_fore, back: get_style(:back, nil, nil)}
-      )
-
-      label(:shortcut,
-        origin: {0, 2},
-        size: {cols, 1},
-        text: "(ctrl+esc)",
+        size: {cols, 3},
+        text: "App Manager",
         class: %{fore: @ash_logo_fore, back: get_style(:back, nil, nil)}
       )
 
@@ -56,25 +49,9 @@ defmodule Ash.Term.Manager do
 
       select(:select,
         origin: {0, 3},
-        size: {cols, rows - 4},
+        size: {cols, rows - 3},
         items: items,
         on_change: fn {i, _} -> set_selected.(i) end
-      )
-
-      label(:logo,
-        text: "ash>",
-        origin: {0, rows - 1},
-        size: {div(cols, 2), 2},
-        align: :left,
-        class: %{fore: @ash_logo_fore, back: get_style(:back, nil, nil)}
-      )
-
-      label(:url,
-        origin: {div(cols, 2), rows - 1},
-        size: {div(cols, 2), 2},
-        text: "appshell.org",
-        align: :right,
-        class: %{fore: @ash_logo_fore, back: get_style(:back, nil, nil)}
       )
     end
   end
