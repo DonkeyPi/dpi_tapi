@@ -70,6 +70,13 @@ defmodule Ash.Term.Server do
     Map.put(state, :selected, selected)
   end
 
+  defp home(%{selected: selected, manager: manager} = state) do
+    {cols, rows} = state.size
+    send(selected, {self(), xoff_write()})
+    send(manager, xon_event(cols, rows))
+    Map.put(state, :selected, manager)
+  end
+
   defp loop(%{port: port, selected: selected, manager: manager} = state) do
     receive do
       {:client, client, title, select} ->
@@ -117,20 +124,32 @@ defmodule Ash.Term.Server do
       {^port, {:data, data}} ->
         state =
           case {shortcut(data), selected == manager} do
-            {true, false} ->
-              {cols, rows} = state.size
-              send(selected, {self(), xoff_write()})
-              send(manager, xon_event(cols, rows))
-              Map.put(state, :selected, manager)
+            {:show, false} ->
+              home(state)
 
-            {true, true} ->
+            {:show, true} ->
               state
 
-            {false, true} ->
+            {:next, true} ->
+              case sort(state) do
+                [] -> state
+                [info | _] -> select(info, state)
+              end
+
+            {:next, false} ->
+              id = state.clients[selected].id
+              next = Enum.find(sort(state), &(&1.id > id))
+
+              case next do
+                nil -> home(state)
+                _ -> select(next, state)
+              end
+
+            {:none, true} ->
               Parser.parse(data, &handle/2, manager)
               state
 
-            {false, false} ->
+            {:none, false} ->
               send(selected, {self(), {:write, data}})
               state
           end
@@ -146,8 +165,11 @@ defmodule Ash.Term.Server do
   end
 
   defp model(state) do
-    list = Enum.sort_by(Map.values(state.clients), & &1.id)
-    {:event, %{type: :model, model: list}}
+    {:event, %{type: :model, model: sort(state)}}
+  end
+
+  defp sort(state) do
+    Enum.sort_by(Map.values(state.clients), & &1.id)
   end
 
   defp handle(pid, event) do

@@ -34,14 +34,17 @@ defmodule Ash.Term.Events do
   # kubuntu opens app manager as well and its the press event
   # 11->PRESS 12->RELEASE (using both because of above)
   # ff1b->ESC
+  # ff09->TAB
   # 01->Shift flags
   # 02->Control flags
+  # 03->Alt flags
   # 00000000->xy missing data
-  def shortcut(""), do: false
-  def shortcut("11ff1b02" <> <<_::binary-size(8)>> <> _), do: true
-  def shortcut("12ff1b02" <> <<_::binary-size(8)>> <> _), do: true
-  def shortcut("11ff1b01" <> <<_::binary-size(8)>> <> _), do: true
-  def shortcut("12ff1b01" <> <<_::binary-size(8)>> <> _), do: true
+  def shortcut(""), do: :none
+  def shortcut("11ff1b02" <> <<_::binary-size(8)>> <> _), do: :show
+  def shortcut("12ff1b02" <> <<_::binary-size(8)>> <> _), do: :show
+  def shortcut("11ff1b01" <> <<_::binary-size(8)>> <> _), do: :show
+  def shortcut("12ff1b01" <> <<_::binary-size(8)>> <> _), do: :show
+  def shortcut("11ff0904" <> <<_::binary-size(8)>> <> _), do: :next
   def shortcut(<<_::binary-size(16)>> <> tail), do: shortcut(tail)
 
   defp hex(v, p), do: Integer.to_string(v, 16) |> String.pad_leading(p, "0")
