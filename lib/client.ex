@@ -12,6 +12,7 @@ defmodule Ash.Term.Client do
     {select, opts} = Keyword.pop(opts, :select, false)
     {node, opts} = Keyword.pop(opts, :node)
 
+    # No need to check for local node since returned pid is local.
     server =
       case node do
         nil -> Process.whereis(server)
