@@ -1,4 +1,4 @@
-defmodule Ash.Term.Events do
+defmodule Dpi.Term.Events do
   # FFFFXX0000000000
   # FF -> sys
   # FF61 -> print
@@ -8,7 +8,7 @@ defmodule Ash.Term.Events do
   # 0000 -> y
   defmacro __using__(_) do
     quote do
-      import Ash.Term.Events
+      import Dpi.Term.Events
     end
   end
 

@@ -1,10 +1,10 @@
-defmodule Ash.Term.Driver do
-  @behaviour Ash.Tui.Term
-  alias Ash.Term.Encoder
-  alias Ash.Term.Parser
-  alias Ash.Term.Port
-  use Ash.Term.Defaults
-  use Ash.Term.Const
+defmodule Dpi.Term.Driver do
+  @behaviour Dpi.Tui.Term
+  alias Dpi.Term.Encoder
+  alias Dpi.Term.Parser
+  alias Dpi.Term.Port
+  use Dpi.Term.Defaults
+  use Dpi.Term.Const
 
   def start(opts) do
     this = self()

@@ -1,9 +1,9 @@
-defmodule Ash.Term.Console do
-  @behaviour Ash.Tui.Term
-  alias Ash.Term.Encoder
-  alias Ash.Term.Client
+defmodule Dpi.Term.Console do
+  @behaviour Dpi.Tui.Term
+  alias Dpi.Term.Encoder
+  alias Dpi.Term.Client
 
-  @node :ash_console@localhost
+  @node :dpi_console@localhost
 
   def start(opts) do
     opts = Keyword.put_new(opts, :node, @node)

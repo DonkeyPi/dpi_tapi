@@ -1,14 +1,14 @@
-defmodule Ash.Term.Client do
-  @behaviour Ash.Tui.Term
-  alias Ash.Term.Encoder
-  alias Ash.Term.Parser
+defmodule Dpi.Term.Client do
+  @behaviour Dpi.Tui.Term
+  alias Dpi.Term.Encoder
+  alias Dpi.Term.Parser
 
   @state %{pid: nil, active: false, cols: 0, rows: 0}
 
   def start(opts) do
     this = self()
     title = Keyword.fetch!(opts, :title)
-    {server, opts} = Keyword.pop(opts, :server, Ash.Term.Server)
+    {server, opts} = Keyword.pop(opts, :server, Dpi.Term.Server)
     {select, opts} = Keyword.pop(opts, :select, false)
     {node, opts} = Keyword.pop(opts, :node)
 

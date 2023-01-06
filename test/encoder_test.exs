@@ -1,6 +1,6 @@
-defmodule Ash.EncoderTest do
+defmodule Dpi.EncoderTest do
   use ExUnit.Case
-  alias Ash.Term.Encoder
+  alias Dpi.Term.Encoder
 
   defp text(block) do
     Encoder.encode(:text, block) |> to_string()

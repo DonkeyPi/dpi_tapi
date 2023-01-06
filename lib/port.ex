@@ -1,4 +1,4 @@
-defmodule Ash.Term.Port do
+defmodule Dpi.Term.Port do
   @opts [
     :title,
     :rows,
@@ -18,9 +18,9 @@ defmodule Ash.Term.Port do
       end
 
     opts = [:binary, :exit_status, :stream, args: args]
-    priv = :code.priv_dir(:ash_term)
+    priv = :code.priv_dir(:dpi_term)
     target = File.read!("#{priv}/target") |> String.trim()
-    Port.open({:spawn_executable, '#{priv}/#{target}/ash_term'}, opts)
+    Port.open({:spawn_executable, '#{priv}/#{target}/dpi_term'}, opts)
   end
 
   def write!(port, iodata) do

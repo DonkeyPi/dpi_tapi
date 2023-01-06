@@ -1,5 +1,5 @@
-defmodule Ash.Term.Parser do
-  use Ash.Term.Const
+defmodule Dpi.Term.Parser do
+  use Dpi.Term.Const
 
   def parse("", _, state), do: state
 
@@ -36,64 +36,64 @@ defmodule Ash.Term.Parser do
 
     event = %{x: x, y: y}
 
-    event = Map.put(event, :shift, (flags &&& @ash_shift_mask) > 0)
-    event = Map.put(event, :control, (flags &&& @ash_control_mask) > 0)
-    event = Map.put(event, :alt, (flags &&& @ash_alt_mask) > 0)
-    event = Map.put(event, :super, (flags &&& @ash_super_mask) > 0)
+    event = Map.put(event, :shift, (flags &&& @dpi_shift_mask) > 0)
+    event = Map.put(event, :control, (flags &&& @dpi_control_mask) > 0)
+    event = Map.put(event, :alt, (flags &&& @dpi_alt_mask) > 0)
+    event = Map.put(event, :super, (flags &&& @dpi_super_mask) > 0)
 
     event =
       case flags do
         0 -> event |> Map.put(:flag, :none)
-        @ash_control_mask -> event |> Map.put(:flag, :control)
-        @ash_shift_mask -> event |> Map.put(:flag, :shift)
-        @ash_alt_mask -> event |> Map.put(:flag, :alt)
-        @ash_super_mask -> event |> Map.put(:flag, :super)
+        @dpi_control_mask -> event |> Map.put(:flag, :control)
+        @dpi_shift_mask -> event |> Map.put(:flag, :shift)
+        @dpi_alt_mask -> event |> Map.put(:flag, :alt)
+        @dpi_super_mask -> event |> Map.put(:flag, :super)
         _ -> event |> Map.put(:flag, :mix)
       end
 
     event =
       case type do
-        @ash_sys_req ->
+        @dpi_sys_req ->
           event
           |> Map.put(:type, :sys)
 
-        @ash_key_release ->
+        @dpi_key_release ->
           event
           |> Map.put(:type, :key)
           |> Map.put(:action, :release)
 
-        @ash_key_press ->
+        @dpi_key_press ->
           event
           |> Map.put(:type, :key)
           |> Map.put(:action, :press)
 
-        @ash_button_release ->
+        @dpi_button_release ->
           event
           |> Map.put(:type, :mouse)
           |> Map.put(:action, :release)
 
-        @ash_button_press ->
+        @dpi_button_press ->
           event
           |> Map.put(:type, :mouse)
           |> Map.put(:action, :press)
 
-        @ash_2button_press ->
+        @dpi_2button_press ->
           event
           |> Map.put(:type, :mouse)
           |> Map.put(:action, :press2)
 
-        @ash_pointer_motion ->
+        @dpi_pointer_motion ->
           event
           |> Map.put(:type, :mouse)
           |> Map.put(:action, :move)
 
-        @ash_scroll_up ->
+        @dpi_scroll_up ->
           event
           |> Map.put(:type, :mouse)
           |> Map.put(:action, :scroll)
           |> Map.put(:dir, :up)
 
-        @ash_scroll_down ->
+        @dpi_scroll_down ->
           event
           |> Map.put(:type, :mouse)
           |> Map.put(:action, :scroll)

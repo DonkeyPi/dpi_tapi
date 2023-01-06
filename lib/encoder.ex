@@ -1,4 +1,4 @@
-defmodule Ash.Term.Encoder do
+defmodule Dpi.Term.Encoder do
   use Bitwise
 
   def encode(:clear, _), do: "c"
